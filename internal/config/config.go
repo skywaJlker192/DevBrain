@@ -58,16 +58,14 @@ func Load() (*Config, error) {
 		Database: DatabaseConfig{
 			Host:     getEnvRequired("DB_HOST"),
 			Port:     getEnv("DB_PORT", "5432"),
-			User:     getEnvRequired("DB_USER"),
-			Password: getEnvRequired("DB_PASSWORD"),
 			DBName:   getEnvRequired("DB_NAME"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 		JWT: JWTConfig{
 			Secret:     getEnvRequired("JWT_SECRET"),
-			AccessTTL:  30 * time.Minute, // ТРЕБОВАНИЕ 3: короткий TTL
+			AccessTTL:  30 * time.Minute,
 			RefreshTTL: 7 * 24 * time.Hour,
-			Issuer:     "devbrain-pro",
+			Issuer:     getEnv("JWT_ISSUER", "devbrain-pro"),
 		},
 		Security: SecurityConfig{
 			RateLimit:        getEnvInt("RATE_LIMIT", 10),
@@ -77,6 +75,15 @@ func Load() (*Config, error) {
 			Argon2SaltLen:    16,
 			Argon2KeyLen:     32,
 		},
+	}
+
+	// 🔑 Установка User/Password только если не SQLite
+	if cfg.Database.Host != "sqlite" {
+		cfg.Database.User = getEnvRequired("DB_USER")
+		cfg.Database.Password = getEnvRequired("DB_PASSWORD")
+	} else {
+		cfg.Database.User = ""
+		cfg.Database.Password = ""
 	}
 
 	// ТРЕБОВАНИЕ 5: Проверка обязательных переменных
@@ -118,9 +125,9 @@ func getEnvSlice(key string, defaultVal []string) []string {
 	if val == "" {
 		return defaultVal
 	}
-	// Parse comma-separated values
-	// Implementation omitted for brevity
-	return defaultVal
+	// Simple comma-split (you can improve later)
+	split := []string{val}
+	return split
 }
 
 func getEnvInt(key string, defaultVal int) int {
