@@ -45,8 +45,6 @@
     ```bash
     go run ./cmd/server
     ```
-    Откройте `http://localhost:8080` в вашем браузере.
+    Откройте `http://localhost:8080` в вашем браузере или сразу **https://devbrain-q3n5.onrender.com/**
 
 ## Будет дорабатываться
-
-## 📁 Структура проекта
