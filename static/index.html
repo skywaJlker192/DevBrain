@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DevBrain - Умное хранилище ссылок для разработчиков">
+    <meta name="theme-color" content="#6366f1">
+
+    <title>DevBrain Pro - Умное хранилище ссылок</title>
+
+    <!-- PWA -->
+    <!-- <link rel="manifest" href="/manifest.json"> -->
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="/static/css/style.css?v=1">
+    <script src="/static/js/app.js?v=1"></script>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content glass">
+            <button class="modal-close" onclick="closeAuthModal()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchAuthTab('login')">Вход</button>
+                <button class="tab-btn" onclick="switchAuthTab('register')">Регистрация</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Пароль" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow">
+                    <span>Войти</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form" style="display: none;">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regName" placeholder="Имя" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="Пароль (мин. 8 символов)" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-glow">
+                    <span>Зарегистрироваться</span>
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header glass">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>DevBrain</h1>
+                    <span>Pro</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="icon-btn" onclick="showStats()" title="Статистика">
+                    <i class="fas fa-chart-bar"></i>
+                </button>
+                <button class="icon-btn" onclick="exportData()" title="Экспорт">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button class="icon-btn" onclick="toggleSettings()" title="Настройки">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div id="userMenu" class="user-menu" style="display: none;">
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                    </button>
+                </div>
+                <button id="authBtn" class="btn btn-primary" onclick="openAuthModal()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Войти</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Add Link Section -->
+            <section class="add-section glass">
+                <div class="add-form">
+                    <div class="input-wrapper">
+                        <i class="fas fa-link"></i>
+                        <input
+                            type="url"
+                            id="urlInput"
+                            placeholder="Вставьте ссылку (https://...)"
+                            autocomplete="off"
+                        >
+                        <button class="paste-btn" onclick="pasteFromClipboard()" title="Вставить">
+                            <i class="fas fa-paste"></i>
+                        </button>
+                    </div>
+
+                    <div class="tags-input-wrapper">
+                        <i class="fas fa-tags"></i>
+                        <div id="tagsContainer" class="tags-input">
+                            <input
+                                type="text"
+                                id="tagInput"
+                                placeholder="Теги (нажмите Enter)"
+                                autocomplete="off"
+                            >
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-add" onclick="addLink()">
+                        <i class="fas fa-plus"></i>
+                        <span>Добавить</span>
+                    </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalLinks">0</div>
+                        <div class="stat-label">Всего ссылок</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalTags">0</div>
+                        <div class="stat-label">Уникальных тегов</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="readingTime">0м</div>
+                        <div class="stat-label">Время чтения</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search & Filters -->
+            <section class="filters-section">
+                <div class="search-wrapper glass">
+                    <i class="fas fa-search"></i>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Поиск по заголовкам, описанию, URL..."
+                    >
+                    <div class="search-hints">
+                        <kbd>Ctrl</kbd>+<kbd>K</kbd>
+                    </div>
+                </div>
+
+                <div class="filter-tags" id="filterTags">
+                    <!-- Dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Links Grid -->
+            <section class="links-section">
+                <div id="linksGrid" class="links-grid">
+                    <!-- Cards will be inserted here -->
+                </div>
+
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <h3>Пока пусто</h3>
+                    <p>Добавьте первую ссылку, чтобы начать</p>
+                </div>
+
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <div class="spinner"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Keyboard Shortcuts Help -->
+    <!-- <div class="shortcuts-hint">
+        <button class="icon-btn" onclick="showStats()" title="Статистика">
+            <i class="fas fa-chart-bar"></i>
+        </button>
+    </div> -->
+
+</body>
+</html>
