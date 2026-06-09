@@ -47,16 +47,6 @@
     ```
     Откройте `http://localhost:8080` в вашем браузере.
 
-## ☁️ Деплой на Render.com
-
-1.  Создайте аккаунт на [Render.com](https://render.com).
-2.  Создайте новый **Web Service**.
-3.  Подключите репозиторий GitHub (`skywaJlker192/DevBrain`).
-4.  Укажите:
-    -   **Build Command:** `go build -o server ./cmd/server`
-    -   **Start Command:** `./server`
-5.  В разделе **Environment Variables** укажите переменные из вашего `.env` файла.
-6.  Нажмите **Create Web Service**.
-7.  Убедитесь, что включён **Auto-Deploy** для автоматического обновления при пуше в `main`.
+## Будет дорабатываться
 
 ## 📁 Структура проекта
